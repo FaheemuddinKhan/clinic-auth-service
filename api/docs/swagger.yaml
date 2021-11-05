@@ -1,0 +1,204 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  NewPhoneOTPRequest:
+    description: represents body of New Phone OTP Request
+    properties:
+      country_code:
+        type: string
+        x-go-name: CountryCode
+      phone:
+        type: string
+        x-go-name: Phone
+    type: object
+    x-go-package: github.com/faheemuddinkhan/clinic-auth-service/api/dto
+  NewPhoneOTPResponse:
+    description: represents body of New Phone otp Response
+    properties:
+      otp_id:
+        type: string
+        x-go-name: OTPId
+    type: object
+    x-go-package: github.com/faheemuddinkhan/clinic-auth-service/api/dto
+  NewUserRequest:
+    description: represents new user registration request
+    properties:
+      city:
+        type: string
+        x-go-name: City
+      country:
+        type: string
+        x-go-name: Country
+      district:
+        type: string
+        x-go-name: District
+      dob:
+        format: date-time
+        type: string
+        x-go-name: DOB
+      email:
+        type: string
+        x-go-name: Email
+      first_name:
+        type: string
+        x-go-name: FirstName
+      last_name:
+        type: string
+        x-go-name: LastName
+      phone:
+        type: string
+        x-go-name: Phone
+      pin_code:
+        type: string
+        x-go-name: PinCode
+      state:
+        type: string
+        x-go-name: State
+      street:
+        type: string
+        x-go-name: Street
+      username:
+        type: string
+        x-go-name: Username
+    type: object
+    x-go-package: github.com/faheemuddinkhan/clinic-auth-service/api/dto
+  NewUserResponse:
+    description: represents new user registration response
+    properties:
+      jwt_token:
+        type: string
+        x-go-name: Token
+      user_id:
+        type: string
+        x-go-name: UserId
+    type: object
+    x-go-package: github.com/faheemuddinkhan/clinic-auth-service/api/dto
+  VerifyOTPRequest:
+    description: represents body of Verify otp Request
+    properties:
+      otp_id:
+        type: string
+        x-go-name: OTPId
+      otp_value:
+        type: string
+        x-go-name: OTP
+      phone:
+        type: string
+        x-go-name: Phone
+    type: object
+    x-go-package: github.com/faheemuddinkhan/clinic-auth-service/api/dto
+  VerifyOTPResponse:
+    description: represents body of verify otp response
+    properties:
+      registration_jwt:
+        type: string
+        x-go-name: RegistrationJWT
+      success:
+        type: boolean
+        x-go-name: Success
+    type: object
+    x-go-package: github.com/faheemuddinkhan/clinic-auth-service/api/dto
+host: some-url.com
+info:
+  description: Documentation of our awesome API.
+  title: awesome.
+  version: 1.0.0
+paths:
+  /phone/otp?type=request:
+    post:
+      description: Requests for the otp to verify Phone number of user
+      operationId: phoneotprequest
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/NewPhoneOTPRequest'
+      - in: query
+        name: type
+        type: string
+        x-go-name: Type
+      responses:
+        "200":
+          $ref: '#/responses/phoneotprequestresponse'
+      tags:
+      - phoneotp
+  /phone/otp?type=verify:
+    post:
+      description: Verifies the otp of the user sent along this request
+      operationId: phoneotpverify
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/VerifyOTPRequest'
+      - in: query
+        name: type
+        type: string
+        x-go-name: Type
+      responses:
+        "200":
+          $ref: '#/responses/phoneotpverifyresponse'
+      tags:
+      - phoneotp
+  /user/:
+    post:
+      description: Creates new user
+      operationId: createuserrequest
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/NewUserRequest'
+      responses:
+        "200":
+          $ref: '#/responses/createuserresponse'
+      tags:
+      - user
+  /user/available:
+    get:
+      description: Checks if object (username, email or phone) is available
+      operationId: isavailablerequest
+      parameters:
+      - in: query
+        name: username
+        type: string
+        x-go-name: Username
+      - in: query
+        name: email
+        type: string
+        x-go-name: Email
+      - in: query
+        name: phone
+        type: string
+        x-go-name: Phone
+      responses:
+        "200":
+          $ref: '#/responses/isavailableresponse'
+      tags:
+      - user
+produces:
+- application/json
+responses:
+  createuserresponse:
+    description: The response contains success=true on successful user creation
+    schema:
+      $ref: '#/definitions/NewUserResponse'
+  isavailableresponse:
+    description: The response contains true or false on availability of the object,
+      one query at a time will be served
+  phoneotprequestresponse:
+    description: Phone OTP Request's response contains OTP id which has to be sent
+      back along with the OTP received on phone
+    schema:
+      $ref: '#/definitions/NewPhoneOTPResponse'
+  phoneotpverifyresponse:
+    description: Response for the Verification of Phone OTP
+    schema:
+      $ref: '#/definitions/VerifyOTPResponse'
+schemes:
+- http
+securityDefinitions:
+  basic:
+    type: basic
+swagger: "2.0"
